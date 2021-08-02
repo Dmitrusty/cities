@@ -1,0 +1,10 @@
+.big {
+    font-size: 1.2em;
+    line-height: 1.5em;
+}
+/* Комментарии в CSS */
+.center {text-align: center;}
+
+.small {
+    font-size: 1em
+}

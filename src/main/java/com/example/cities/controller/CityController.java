@@ -19,7 +19,7 @@ public class CityController {
         this.cityService = cityService;
     }
 
-    @GetMapping(value = "*")
+    @GetMapping(value = "/*")
     public String defaultRoute() {
         return "redirect:/begin";
     }
@@ -58,7 +58,7 @@ public class CityController {
                 char lastLetterUser = userCityName.toLowerCase().charAt(userCityName.length() - 1);
                 City serverCity = cityService.getNextCity(lastLetterUser);
                 if (serverCity == null){
-                    model.addAttribute("message", "Не могу подобрать город. Поздравляю с победой!");
+                    model.addAttribute("message", "Не могу подобрать город. Вы победили. Поздравляю!");
                     return "end";
                 }
 

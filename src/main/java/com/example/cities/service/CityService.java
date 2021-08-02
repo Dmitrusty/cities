@@ -83,6 +83,7 @@ public class CityService {
             if (!allCities.isEmpty()) {
                 firstCity = allCities.get(random.nextInt(allCities.size()));
                 markCity(firstCity);
+                firstCity.setPlayed(true);
             }
 
         } catch (SQLException throwables) {

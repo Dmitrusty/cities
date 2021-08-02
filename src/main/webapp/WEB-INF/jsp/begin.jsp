@@ -9,9 +9,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Игра "города"</title>
+    <title>Игра "Города"</title>
+    <link href="styles/styles.css" type="text/css" rel="stylesheet">
 </head>
-<body>
+<body class="center">
 <p>Начинаем!</p>
 <p>Я называю город:</p>
 <p>${firstCityName}</p>

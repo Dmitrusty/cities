@@ -9,9 +9,10 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Игра "города"</title>
+    <title>Игра "Города"</title>
+    <link href="styles/styles.css" type="text/css" rel="stylesheet">
 </head>
-<body>
+<body class="center">
 <p>${message}</p>
 <button onclick="location.href='/begin'">Начать игру</button>
 </body>
