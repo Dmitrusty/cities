@@ -4,25 +4,25 @@ import com.example.cities.model.City;
 import com.example.cities.util.DatabaseConnection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Random;
 
 @Service
 public class CityService {
-    private static Random random = new Random();
+    private static final Random random = new Random();
     private static final String SELECT_ALL_CITIES = "SELECT * FROM cities ORDER BY id";
     private static final String SELECT_NEXT_CITIES = "SELECT * FROM cities WHERE ((`isPlayed` = false ) and (city like ?))";
     private static final String SELECT_CITY_BY_NAME = "SELECT * FROM cities WHERE (city like ?)";
     private static final String UPDATE_CITY = "UPDATE `cities` SET `isPlayed` = true WHERE (`id` = ?)";
     private static final String UNMARK_ALL_CITIES = "UPDATE `cities` SET `isPlayed` = false ";
+    private final DatabaseConnection databaseConnection;
 
-    @Autowired
-    private DatabaseConnection databaseConnection;
+    public CityService(DatabaseConnection databaseConnection) {
+        this.databaseConnection = databaseConnection;
+    }
 
     /**
      * Marks the given city played
@@ -175,4 +175,5 @@ public class CityService {
     public boolean isValidCity(String cityName, char givenLetter) {
         return cityName != null && cityName.charAt(0) == givenLetter;
     }
+
 }

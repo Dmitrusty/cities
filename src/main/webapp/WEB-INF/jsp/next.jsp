@@ -19,19 +19,19 @@
 <c:if test="${error == null}">
     <p></p>
     <p>Я называю город:</p>
-    <p>${pcCityName}</p>
+    <p>${serverCityName}</p>
 </c:if>
 <c:if test="${error != null}">
     <p>${error}</p>
     <p>ранее я назвал город:</p>
-    <p>${pcCityName}</p>
+    <p>${serverCityName}</p>
 </c:if>
 <div>
-    <form method="post" action="/next">
+    <form method="post" action="<c:url value="/next"/>">
         <label for="nam">Назовите город: </label>
         <input id="nam" type="text" name="userCityName" maxlength="35" required/>
         <input type="submit" value="Назвать">
-        <input type="hidden" name="pcCityNamePrevious" value="${pcCityName}">
+        <input type="hidden" name="serverCityNamePrevious" value="${serverCityName}">
     </form>
 </div>
 <button onclick="location.href='/giveUp'" >Завершить игру</button>

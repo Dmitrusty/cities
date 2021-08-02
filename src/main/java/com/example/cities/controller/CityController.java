@@ -9,10 +9,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import static com.example.cities.util.CityUtils.formatOut;
+
 @Controller
 public class CityController {
-    @Autowired
-    private CityService cityService;
+    private final CityService cityService;
+
+    public CityController(CityService cityService) {
+        this.cityService = cityService;
+    }
+
+    @GetMapping(value = "*")
+    public String defaultRoute() {
+        return "redirect:/begin";
+    }
 
     @GetMapping(value = "/begin")
     public String begin(Model model) {
@@ -28,43 +38,35 @@ public class CityController {
     }
 
     @PostMapping(value = "/next")
-    public String next(Model model, @RequestParam String userCityName, @RequestParam String pcCityNamePrevious) {
-        String userCityNameLow = userCityName.toLowerCase();
-        City userCity = cityService.searchCityByName(userCityNameLow);
+    public String next(Model model, @RequestParam String userCityName, @RequestParam String serverCityNamePrevious) {
+        userCityName = userCityName.toLowerCase();
+        City userCity = cityService.searchCityByName(userCityName);
 
         if(userCity == null){
-            // city from user is already played or unknown
-            model.addAttribute("error", "Город " + formatOut(userCityNameLow) + " уже сыгран или неизвестен. Пожалуйста, назовите другой город.");
-            model.addAttribute("pcCityName", pcCityNamePrevious);
-            model.addAttribute("userCityNamePrevious", formatOut(userCityNameLow));
-            return "next";
+            model.addAttribute("error", "Город " + formatOut(userCityName) + " уже сыгран или неизвестен. Пожалуйста, назовите другой город.");
+            model.addAttribute("serverCityName", serverCityNamePrevious);
         } else {
-            char lastLetterPc = pcCityNamePrevious.charAt(pcCityNamePrevious.length() - 1);
+            char serverCityLastLetter = serverCityNamePrevious.charAt(serverCityNamePrevious.length() - 1);
 
-            if (!cityService.isValidCity(userCityNameLow, lastLetterPc)) {
-                // city from user starts from wrong letter
+            if (!cityService.isValidCity(userCityName, serverCityLastLetter)) {
                 model.addAttribute("error", "Название города должно начинаться на букву "
-                        + lastLetterPc + ". Попробуйте снова.");
-                model.addAttribute("pcCityName", formatOut(pcCityNamePrevious));
-                model.addAttribute("userCityNamePrevious", formatOut(userCityNameLow));
-                return "next";
+                        + serverCityLastLetter + ". Попробуйте снова.");
+                model.addAttribute("serverCityName", formatOut(serverCityNamePrevious));
             } else {
-                // normal next step
                 cityService.markCity(userCity);
 
-                char lastLetterUser = userCityNameLow.toLowerCase().charAt(userCityNameLow.length() - 1);
-                City pcCity = cityService.getNextCity(lastLetterUser);
-                if (pcCity == null){
-                    // it`s no unplayed cities for the required letter, user wins
+                char lastLetterUser = userCityName.toLowerCase().charAt(userCityName.length() - 1);
+                City serverCity = cityService.getNextCity(lastLetterUser);
+                if (serverCity == null){
                     model.addAttribute("message", "Не могу подобрать город. Поздравляю с победой!");
                     return "end";
                 }
 
-                model.addAttribute("pcCityName", formatOut(pcCity.getName()));
-                model.addAttribute("userCityNamePrevious", formatOut(userCityNameLow));
-                return "next";
+                model.addAttribute("serverCityName", formatOut(serverCity.getName()));
             }
         }
+        model.addAttribute("userCityNamePrevious", formatOut(userCityName));
+        return "next";
     }
 
     @GetMapping(value = "/giveUp")
@@ -76,9 +78,5 @@ public class CityController {
     @GetMapping(value = "/end")
     public String end(){
         return "end";
-    }
-
-    private String formatOut(String name){
-        return name.substring(0,1).toUpperCase() + name.substring(1).toLowerCase();
     }
 }

@@ -16,11 +16,11 @@
 <p>Я называю город:</p>
 <p>${firstCityName}</p>
 <div>
-    <form method="post" action="/next">
-        <label for="nam">Назовите город: </label>
-        <input id="nam" type="text" name="userCityName" maxlength="35" required/>
+    <form method="post" action="<c:url value="/next"/>">
+        <label for="name">Назовите город: </label>
+        <input id="name" type="text" name="userCityName" maxlength="35" required/>
         <input type="submit" value="Назвать">
-        <input type="hidden" name="pcCityNamePrevious" value="${firstCityName}">
+        <input type="hidden" name="serverCityNamePrevious" value="${firstCityName}">
     </form>
 </div>
 <button onclick="location.href='/giveUp'" >Завершить игру</button>
