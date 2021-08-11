@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-@Service
+// @Service
 public class CityService {
     private static final Random random = new Random();
     private static final String SELECT_ALL_CITIES = "SELECT * FROM cities ORDER BY id";

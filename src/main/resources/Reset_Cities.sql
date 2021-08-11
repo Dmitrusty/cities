@@ -1,19 +1,19 @@
-drop table if exists cities;
+drop table if exists city;
 
 
-CREATE TABLE if not exists cities(
+CREATE TABLE if not exists city(
     id INT PRIMARY KEY AUTO_INCREMENT,
-    city varchar(255) not null,
-    isPlayed BIT not null
+    name varchar(255) not null,
+    played BIT not null
     );
 
-INSERT INTO cities values (1, 'антверпен', false);
-INSERT INTO cities values (2, 'новгород', false);
-INSERT INTO cities values (3, 'днепр', false);
-INSERT INTO cities values (4, 'рига', false);
-INSERT INTO cities values (5, 'николаев', false);
-INSERT INTO cities values (6, 'вологда', false);
-INSERT INTO cities values (7, 'вильнюс', false);
-INSERT INTO cities values (8, 'самара', false);
-INSERT INTO cities values (9, 'армавир', false);
-INSERT INTO cities values (10, 'ростов', false);
+INSERT INTO city values (1, 'антверпен', false);
+INSERT INTO city values (2, 'новгород', false);
+INSERT INTO city values (3, 'днепр', false);
+INSERT INTO city values (4, 'рига', false);
+INSERT INTO city values (5, 'николаев', false);
+INSERT INTO city values (6, 'вологда', false);
+INSERT INTO city values (7, 'вильнюс', false);
+INSERT INTO city values (8, 'самара', false);
+INSERT INTO city values (9, 'армавир', false);
+INSERT INTO city values (10, 'ростов', false);

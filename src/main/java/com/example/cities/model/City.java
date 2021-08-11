@@ -1,9 +1,17 @@
 package com.example.cities.model;
 
+import javax.persistence.*;
+
+@Entity
+@Table(name = "city")
 public class City {
+    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
     int id;
+    @Column(name = "name")
     String name;
-    boolean isPlayed;
+    @Column(name = "played")
+    boolean played;
 
     public int getId() {
         return id;
@@ -22,10 +30,10 @@ public class City {
     }
 
     public boolean isPlayed() {
-        return isPlayed;
+        return played;
     }
 
     public void setPlayed(boolean played) {
-        isPlayed = played;
+        this.played = played;
     }
 }

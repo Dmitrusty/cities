@@ -2,6 +2,8 @@ package com.example.cities.controller;
 
 import com.example.cities.model.City;
 import com.example.cities.service.CityService;
+import com.example.cities.service.CityServiceJpa;
+import com.example.cities.util.CityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,9 +15,9 @@ import static com.example.cities.util.CityUtils.formatOut;
 
 @Controller
 public class CityController {
-    private final CityService cityService;
+    private final CityServiceJpa cityService;
 
-    public CityController(CityService cityService) {
+    public CityController(CityServiceJpa cityService) {
         this.cityService = cityService;
     }
 
@@ -48,7 +50,7 @@ public class CityController {
         } else {
             char serverCityLastLetter = serverCityNamePrevious.charAt(serverCityNamePrevious.length() - 1);
 
-            if (!cityService.isValidCity(userCityName, serverCityLastLetter)) {
+            if (!CityUtils.isValidCity(userCityName, serverCityLastLetter)) {
                 model.addAttribute("error", "Название города должно начинаться на букву "
                         + serverCityLastLetter + ". Попробуйте снова.");
                 model.addAttribute("serverCityName", formatOut(serverCityNamePrevious));
