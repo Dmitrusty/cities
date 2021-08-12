@@ -16,17 +16,31 @@ public class CityServiceJpa {
         this.cityRepository = cityRepository;
     }
 
+    /**
+     * Looking for a city by its name
+     *
+     * @param cityName - name of the city to find
+     * @return object City from database, or null if absent
+     */
     public City searchCityByName(String cityName) {
-        City city = cityRepository.findByName(cityName);
-        markCity(city);
-        return city;
+        return cityRepository.findByName(cityName);
     }
 
+    /**
+     * Marks the given city played
+     *
+     * @param city - the given city
+     */
     public void markCity(City city){
-        city.setPlayed(true);
-        cityRepository.save(city);
+        if (city != null) {
+            city.setPlayed(true);
+            cityRepository.save(city);
+        }
     }
 
+    /**
+     * Marks all cities in database unplayed
+     */
     private void unmarkAllCities(){
         List<City> cities = cityRepository.findAll();
         for(City city : cities) {
@@ -35,6 +49,12 @@ public class CityServiceJpa {
         cityRepository.saveAll(cities);
     }
 
+    /**
+     * This method is called at the beginning of the game.
+     * The method makes all cities unplayed and returns a random city
+     *
+     * @return random object City from database
+     */
     public City getFirstCity(){
         unmarkAllCities();
 
@@ -49,6 +69,12 @@ public class CityServiceJpa {
         return firstCity;
     }
 
+    /**
+     * Looking for a city that has not yet been played, the name of which begins with a given letter
+     *
+     * @param firstLetter - the first letter in the name of a city
+     * @return object City with the required first letter, or null if absent
+     */
     public City getNextCity(char firstLetter){
         List<City> suitableCities = cityRepository.findByNameStartsWithAndPlayedFalse(String.valueOf(firstLetter));
 

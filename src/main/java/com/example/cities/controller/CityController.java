@@ -1,10 +1,8 @@
 package com.example.cities.controller;
 
 import com.example.cities.model.City;
-import com.example.cities.service.CityService;
 import com.example.cities.service.CityServiceJpa;
 import com.example.cities.util.CityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,16 +19,16 @@ public class CityController {
         this.cityService = cityService;
     }
 
-    @GetMapping(value = "/*")
-    public String defaultRoute() {
-        return "redirect:/begin";
-    }
+//    @GetMapping(value = "/*")
+//    public String defaultRoute() {
+//        return "redirect:/begin";
+//    }
 
     @GetMapping(value = "/begin")
     public String begin(Model model) {
         City city = cityService.getFirstCity();
 
-        if (city == null){
+        if (city == null) {
             model.addAttribute("message", "Извините, не могу найти подходящий город.");
             return "end";
         } else {
@@ -42,29 +40,34 @@ public class CityController {
     @PostMapping(value = "/next")
     public String next(Model model, @RequestParam String userCityName, @RequestParam String serverCityNamePrevious) {
         userCityName = userCityName.toLowerCase();
-        City userCity = cityService.searchCityByName(userCityName);
+        char serverCityLastLetter = serverCityNamePrevious.charAt(serverCityNamePrevious.length() - 1);
 
-        if(userCity == null){
-            model.addAttribute("error", "Город " + formatOut(userCityName) + " уже сыгран или неизвестен. Пожалуйста, назовите другой город.");
-            model.addAttribute("serverCityName", serverCityNamePrevious);
+        if (CityUtils.isWrongFirstLetter(userCityName, serverCityLastLetter)) {
+            model.addAttribute("error", "Название города должно начинаться на букву "
+                    + serverCityLastLetter + ". Попробуйте снова.");
+            model.addAttribute("serverCityName", formatOut(serverCityNamePrevious));
         } else {
-            char serverCityLastLetter = serverCityNamePrevious.charAt(serverCityNamePrevious.length() - 1);
+            City userCity = cityService.searchCityByName(userCityName);
 
-            if (!CityUtils.isValidCity(userCityName, serverCityLastLetter)) {
-                model.addAttribute("error", "Название города должно начинаться на букву "
-                        + serverCityLastLetter + ". Попробуйте снова.");
-                model.addAttribute("serverCityName", formatOut(serverCityNamePrevious));
+            if (userCity == null) {
+                model.addAttribute("error", "Город " + formatOut(userCityName) + " неизвестен. Пожалуйста, назовите другой город.");
+                model.addAttribute("serverCityName", serverCityNamePrevious);
             } else {
-                cityService.markCity(userCity);
+                if (userCity.isPlayed()) {
+                    model.addAttribute("error", "Город "
+                            + formatOut(userCity.getName()) + " уже сыгран. Попробуйте снова.");
+                    model.addAttribute("serverCityName", formatOut(serverCityNamePrevious));
+                } else {
+                    cityService.markCity(userCity);
 
-                char lastLetterUser = userCityName.toLowerCase().charAt(userCityName.length() - 1);
-                City serverCity = cityService.getNextCity(lastLetterUser);
-                if (serverCity == null){
-                    model.addAttribute("message", "Не могу подобрать город. Вы победили. Поздравляю!");
-                    return "end";
+                    char lastLetterUser = userCityName.toLowerCase().charAt(userCityName.length() - 1);
+                    City serverCity = cityService.getNextCity(lastLetterUser);
+                    if (serverCity == null) {
+                        model.addAttribute("message", "Не могу подобрать город. Вы победили. Поздравляю!");
+                        return "end";
+                    }
+                    model.addAttribute("serverCityName", formatOut(serverCity.getName()));
                 }
-
-                model.addAttribute("serverCityName", formatOut(serverCity.getName()));
             }
         }
         model.addAttribute("userCityNamePrevious", formatOut(userCityName));
@@ -72,13 +75,13 @@ public class CityController {
     }
 
     @GetMapping(value = "/giveUp")
-    public String giveUp(Model model){
+    public String giveUp(Model model) {
         model.addAttribute("message", "Вы проиграли.");
         return "end";
     }
 
     @GetMapping(value = "/end")
-    public String end(){
+    public String end() {
         return "end";
     }
 }
